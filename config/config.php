@@ -35,10 +35,10 @@ $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https'
 $host     = $_SERVER['HTTP_HOST'] ?? 'localhost';
 $path     = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
 
-// Auto-detect base URL - adjust SITE_BASE_PATH if in a subfolder
-// e.g., if installed at /school-erp/, set to '/school-erp'
-define('SITE_BASE_PATH', '');  // Leave empty if at domain root
-define('SITE_URL', $protocol . '://' . $host . SITE_BASE_PATH);
+// Subdomain root install — SITE_BASE_PATH must be empty
+// (asd.earn-bharat.site lives at the domain root, not a subfolder)
+define('SITE_BASE_PATH', '');
+define('SITE_URL', $protocol . '://' . $host);
 
 // Physical paths
 define('ROOT_PATH',    dirname(__DIR__) . '/');
