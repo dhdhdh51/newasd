@@ -1,0 +1,363 @@
+/*
+ * School ERP - Custom Stylesheet
+ * Mobile-first, Bootstrap 5 extension
+ */
+
+/* ============================================================
+   CSS Variables
+   ============================================================ */
+:root {
+  --sidebar-width:     240px;
+  --navbar-height:     56px;
+  --sidebar-bg:        #1e2a3a;
+  --sidebar-text:      rgba(255,255,255,.75);
+  --sidebar-active-bg: rgba(13,110,253,.2);
+  --sidebar-active-text:#4da3ff;
+  --sidebar-hover-bg:  rgba(255,255,255,.06);
+  --transition:        0.25s ease;
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background-color: #f0f2f5;
+  color: #212529;
+}
+
+/* ============================================================
+   Navbar
+   ============================================================ */
+.navbar.fixed-top {
+  height: var(--navbar-height);
+  z-index: 1030;
+}
+.notif-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: .6rem;
+  min-width: 16px;
+  height: 16px;
+  line-height: 16px;
+  padding: 0 4px;
+}
+
+/* ============================================================
+   Sidebar
+   ============================================================ */
+.sidebar {
+  position: fixed;
+  top: var(--navbar-height);
+  left: 0;
+  width: var(--sidebar-width);
+  height: calc(100vh - var(--navbar-height));
+  background: var(--sidebar-bg);
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 1020;
+  transition: transform var(--transition);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.1) transparent;
+}
+
+.sidebar-header {
+  padding: 16px 16px 8px;
+  font-size: .7rem;
+  letter-spacing: .08em;
+  color: rgba(255,255,255,.35);
+  text-transform: uppercase;
+}
+
+.sidebar-nav {
+  padding: 4px 8px 16px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  color: var(--sidebar-text);
+  text-decoration: none;
+  font-size: .875rem;
+  margin-bottom: 2px;
+  transition: background var(--transition), color var(--transition);
+  white-space: nowrap;
+}
+.sidebar-link i { font-size: 1rem; flex-shrink: 0; }
+.sidebar-link:hover {
+  background: var(--sidebar-hover-bg);
+  color: #fff;
+}
+.sidebar-link.active {
+  background: var(--sidebar-active-bg);
+  color: var(--sidebar-active-text);
+  font-weight: 600;
+}
+.sidebar-link.text-danger-light { color: #ff8585 !important; }
+.sidebar-link.text-danger-light:hover { color: #ff4d4d !important; background: rgba(220,53,69,.15) !important; }
+
+/* Overlay (mobile) */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  z-index: 1015;
+}
+.sidebar-overlay.show { display: block; }
+
+/* Mobile: sidebar hidden off-canvas */
+@media (max-width: 991.98px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  .sidebar.show {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0,0,0,.3);
+  }
+  .main-content {
+    margin-left: 0 !important;
+  }
+}
+
+/* Desktop: sidebar always visible */
+@media (min-width: 992px) {
+  .main-content {
+    margin-left: var(--sidebar-width);
+  }
+}
+
+/* ============================================================
+   Main Content
+   ============================================================ */
+.main-content {
+  min-height: calc(100vh - var(--navbar-height) - 40px);
+  padding-top: calc(var(--navbar-height) + 16px);
+  transition: margin var(--transition);
+}
+
+.app-footer {
+  margin-left: 0;
+  background: #fff;
+  border-top: 1px solid #e9ecef;
+}
+@media (min-width: 992px) {
+  .app-footer { margin-left: var(--sidebar-width); }
+}
+
+/* ============================================================
+   Stat Cards
+   ============================================================ */
+.stat-card {
+  border-radius: 12px;
+  transition: transform .2s, box-shadow .2s;
+}
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,.1) !important;
+}
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   Cards
+   ============================================================ */
+.card {
+  border-radius: 12px;
+}
+.card-header {
+  border-radius: 12px 12px 0 0 !important;
+}
+
+/* ============================================================
+   Tables
+   ============================================================ */
+.table-responsive {
+  -webkit-overflow-scrolling: touch;
+}
+.table > :not(caption) > * > * {
+  vertical-align: middle;
+}
+.fw-mono, code {
+  font-family: 'Courier New', monospace;
+}
+
+/* ============================================================
+   Auth Pages
+   ============================================================ */
+.auth-body {
+  overflow-x: hidden;
+}
+.auth-left {
+  background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+  min-height: 100vh;
+}
+.auth-form-wrap {
+  max-width: 420px;
+}
+.auth-feature-card {
+  background: rgba(255,255,255,.12);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  color: white;
+}
+
+/* Role selector cards */
+.role-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 20px;
+  border: 2px solid #dee2e6;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all .2s;
+  font-size: .85rem;
+  color: #495057;
+  min-width: 80px;
+}
+.role-label i { font-size: 1.4rem; }
+.role-label:hover,
+.role-label.active {
+  border-color: #0d6efd;
+  background: #e8f0fe;
+  color: #0d6efd;
+}
+
+/* Step circles (forgot password) */
+.step-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #dee2e6;
+  color: #aaa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: .9rem;
+  margin: 0 auto;
+  transition: all .3s;
+}
+.step-circle.active {
+  background: #0d6efd;
+  color: white;
+}
+
+/* ============================================================
+   Photo Upload
+   ============================================================ */
+.photo-upload-wrap {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+.photo-upload-wrap img {
+  width: 100px;
+  height: 100px;
+}
+.photo-upload-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  background: #0d6efd;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: .8rem;
+  border: 2px solid white;
+  transition: background .2s;
+}
+.photo-upload-btn:hover { background: #0056b3; }
+
+/* ============================================================
+   Avatar
+   ============================================================ */
+.avatar-xl {
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
+  text-align: center;
+}
+.avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================================
+   Utilities
+   ============================================================ */
+.ls-wide  { letter-spacing: .08em; }
+.letter-spacing-4 { letter-spacing: 4px; }
+.font-monospace { font-family: 'Courier New', monospace !important; }
+.fw-600 { font-weight: 600 !important; }
+
+/* Purple color (not in Bootstrap 5) */
+.text-purple  { color: #6f42c1 !important; }
+.bg-purple    { background-color: #6f42c1 !important; }
+.btn-purple   { background-color: #6f42c1; color: #fff; border-color: #6f42c1; }
+.btn-outline-purple { color: #6f42c1; border-color: #6f42c1; }
+.btn-outline-purple:hover { background-color: #6f42c1; color: #fff; }
+
+/* ============================================================
+   Responsive table fix
+   ============================================================ */
+@media (max-width: 575.98px) {
+  .table-responsive table td,
+  .table-responsive table th {
+    white-space: nowrap;
+  }
+  .btn-group-sm .btn { padding: .2rem .35rem; }
+}
+
+/* ============================================================
+   Print styles
+   ============================================================ */
+@media print {
+  .sidebar,
+  .navbar,
+  .sidebar-overlay,
+  .app-footer,
+  .no-print { display: none !important; }
+  .main-content {
+    margin-left: 0 !important;
+    padding-top: 0 !important;
+  }
+  body { background: white; }
+}
+
+/* ============================================================
+   Scrollbar (webkit)
+   ============================================================ */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,.2); border-radius: 3px; }
+
+/* ============================================================
+   Animations
+   ============================================================ */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.card, .alert { animation: fadeInUp .25s ease both; }

@@ -1,0 +1,28 @@
+# School ERP — robots.txt
+# Allows indexing of public pages; blocks all private/admin paths.
+
+User-agent: *
+
+# Public pages — allow
+Allow: /public/
+Allow: /assets/
+
+# Disallow everything else
+Disallow: /admin/
+Disallow: /student/
+Disallow: /teacher/
+Disallow: /parent/
+Disallow: /auth/
+Disallow: /config/
+Disallow: /includes/
+Disallow: /payment/
+Disallow: /notifications/
+Disallow: /uploads/
+Disallow: /.git/
+Disallow: /database.sql
+
+# Crawl delay (optional — adjust to suit your server)
+Crawl-delay: 5
+
+# Sitemap location
+Sitemap: https://yourdomain.com/sitemap.xml

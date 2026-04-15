@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  School ERP — XML Sitemap
+  Public-facing pages only. Authenticated pages are excluded.
+  Update <loc> values after deploying to your domain.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Home / Login -->
+  <url>
+    <loc>https://yourdomain.com/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Online Admission Form -->
+  <url>
+    <loc>https://yourdomain.com/public/admission.php</loc>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Admission Status Tracker -->
+  <url>
+    <loc>https://yourdomain.com/public/admission-status.php</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+</urlset>

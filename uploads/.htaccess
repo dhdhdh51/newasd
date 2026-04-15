@@ -1,0 +1,16 @@
+# Deny execution of PHP scripts inside uploads/
+# This prevents uploaded file exploits.
+
+<FilesMatch "\.(php|phtml|php3|php4|php5|php7|phps|cgi|pl|py|sh)$">
+  Order Allow,Deny
+  Deny from all
+</FilesMatch>
+
+# Also deny via mod_rewrite
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule \.(php.*)$ - [F,NC,L]
+</IfModule>
+
+# Allow image/document access
+Options -Indexes

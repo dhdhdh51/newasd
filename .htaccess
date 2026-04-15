@@ -1,0 +1,163 @@
+# ============================================================
+# School ERP — Apache .htaccess
+# Requires: mod_rewrite, mod_headers, mod_expires
+# ============================================================
+
+Options -Indexes
+Options -MultiViews
+
+# Follow symbolic links (required for rewrite)
+Options +FollowSymLinks
+
+# ============================================================
+# Rewrite Engine
+# ============================================================
+RewriteEngine On
+
+# If site lives in a sub-directory on shared hosting, set:
+# RewriteBase /schoolerp/
+
+# ─── Block direct access to sensitive files ───────────────
+RewriteRule ^config/           - [F,L]
+RewriteRule ^includes/         - [F,L]
+RewriteRule ^\.git/            - [F,L]
+RewriteRule \.sql$             - [F,L]
+RewriteRule \.log$             - [F,L]
+RewriteRule \.env$             - [F,L]
+RewriteRule ^DEPLOYMENT\.md$   - [F,L]
+
+# ─── Serve existing files / directories as-is ─────────────
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# ─── Pretty URLs: /admin/students/ → admin/students/index.php ─
+# (Most pages are plain directories; Apache will find index.php
+#  automatically via DirectoryIndex below — no explicit rule needed.)
+
+# ─── Force HTTPS (uncomment when SSL certificate is installed) ─
+# RewriteCond %{HTTPS} off
+# RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# ─── Remove trailing slash for files (optional) ───────────
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteRule ^(.*)/$ /$1 [R=301,L]
+
+# ============================================================
+# Directory Index
+# ============================================================
+DirectoryIndex index.php index.html
+
+# ============================================================
+# Security Headers
+# ============================================================
+<IfModule mod_headers.c>
+  # Prevent MIME-type sniffing
+  Header always set X-Content-Type-Options "nosniff"
+
+  # Clickjacking protection
+  Header always set X-Frame-Options "SAMEORIGIN"
+
+  # Basic XSS filter (legacy browsers)
+  Header always set X-XSS-Protection "1; mode=block"
+
+  # Referrer policy
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Remove server signature
+  Header unset Server
+  Header unset X-Powered-By
+
+  # Content Security Policy
+  # Adjust script-src / style-src to match your CDN origins
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'self';"
+
+  # HSTS (uncomment after enabling HTTPS)
+  # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+# ============================================================
+# PHP Settings (shared-hosting overrides)
+# ============================================================
+<IfModule mod_php8.c>
+  php_flag  display_errors      Off
+  php_flag  log_errors           On
+  php_value error_log            /tmp/schoolerp_error.log
+  php_value upload_max_filesize  5M
+  php_value post_max_size        6M
+  php_value max_execution_time   60
+  php_value memory_limit        128M
+  php_value session.cookie_httponly 1
+  php_value session.use_strict_mode 1
+  php_value session.cookie_samesite Lax
+  # Uncomment when on HTTPS:
+  # php_value session.cookie_secure 1
+</IfModule>
+
+# Also works for php7 module
+<IfModule mod_php7.c>
+  php_flag  display_errors      Off
+  php_flag  log_errors           On
+  php_value upload_max_filesize  5M
+  php_value post_max_size        6M
+  php_value max_execution_time   60
+  php_value memory_limit        128M
+  php_value session.cookie_httponly 1
+  php_value session.use_strict_mode 1
+</IfModule>
+
+# ============================================================
+# Caching / Expires
+# ============================================================
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css                  "access plus 7 days"
+  ExpiresByType application/javascript    "access plus 7 days"
+  ExpiresByType image/png                 "access plus 30 days"
+  ExpiresByType image/jpeg                "access plus 30 days"
+  ExpiresByType image/gif                 "access plus 30 days"
+  ExpiresByType image/svg+xml             "access plus 30 days"
+  ExpiresByType image/webp                "access plus 30 days"
+  ExpiresByType image/x-icon              "access plus 90 days"
+  ExpiresByType font/woff2                "access plus 90 days"
+  ExpiresByType text/html                 "access plus 0 seconds"
+</IfModule>
+
+# Disable ETags for static assets (optional)
+<IfModule mod_headers.c>
+  <FilesMatch "\.(css|js|png|jpg|jpeg|gif|ico|svg|webp|woff2)$">
+    Header unset ETag
+    Header append Cache-Control "public, immutable"
+  </FilesMatch>
+</IfModule>
+
+# ============================================================
+# Compression (Gzip)
+# ============================================================
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css
+  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE image/svg+xml font/woff2
+</IfModule>
+
+# ============================================================
+# Block Bad Bots / Scanners (optional basic list)
+# ============================================================
+<IfModule mod_rewrite.c>
+  RewriteCond %{HTTP_USER_AGENT} (sqlmap|nikto|nmap|masscan|zgrab) [NC]
+  RewriteRule .* - [F,L]
+</IfModule>
+
+# ============================================================
+# Protect uploads directory — no PHP execution
+# ============================================================
+<IfModule mod_rewrite.c>
+  RewriteRule ^uploads/.*\.(php|phtml|php3|php4|php5|php7|phps|cgi|pl|py)$ - [F,NC,L]
+</IfModule>
+
+# ============================================================
+# Custom error pages (create these files if desired)
+# ============================================================
+# ErrorDocument 403 /errors/403.php
+# ErrorDocument 404 /errors/404.php
+# ErrorDocument 500 /errors/500.php
