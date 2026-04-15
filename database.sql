@@ -290,6 +290,30 @@ CREATE TABLE IF NOT EXISTS `settings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
+-- Table: gallery
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `gallery` (
+  `id`          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `title`       VARCHAR(200)  DEFAULT NULL,
+  `image`       VARCHAR(255)  NOT NULL,
+  `sort_order`  INT UNSIGNED  DEFAULT 0,
+  `is_active`   TINYINT(1)    DEFAULT 1,
+  `created_at`  TIMESTAMP     DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Table: notices
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `notices` (
+  `id`          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `title`       VARCHAR(255)  NOT NULL,
+  `body`        TEXT          DEFAULT NULL,
+  `category`    ENUM('general','exam','event','holiday','admission') DEFAULT 'general',
+  `is_active`   TINYINT(1)    DEFAULT 1,
+  `created_at`  TIMESTAMP     DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
 -- Table: teacher_subjects (many-to-many)
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS `teacher_subjects` (
@@ -359,6 +383,38 @@ INSERT INTO `settings` (`setting_key`,`setting_value`) VALUES
 ('pass_percentage','33'),
 ('academic_year','2025-2026'),
 ('currency','INR'),
-('currency_symbol','₹');
+('currency_symbol','₹'),
+-- Landing page settings
+('lp_hero_title','Welcome to Our School'),
+('lp_hero_subtitle','Empowering students with quality education, values, and excellence since 2000.'),
+('lp_hero_image',''),
+('lp_hero_btn1_text','Apply for Admission'),
+('lp_hero_btn1_url','/public/admission.php'),
+('lp_hero_btn2_text','Check Status'),
+('lp_hero_btn2_url','/public/admission-status.php'),
+('lp_about_title','About Our School'),
+('lp_about_text','We are committed to providing a nurturing, inclusive learning environment where every student can discover their potential and grow into confident, capable individuals. Our experienced faculty, modern facilities, and holistic curriculum set us apart.'),
+('lp_about_image',''),
+('lp_stat_students','1200+'),
+('lp_stat_teachers','80+'),
+('lp_stat_years','25+'),
+('lp_stat_success','98%'),
+('lp_stat_label1','Students Enrolled'),
+('lp_stat_label2','Expert Teachers'),
+('lp_stat_label3','Years of Excellence'),
+('lp_stat_label4','Pass Rate'),
+('lp_show_gallery','1'),
+('lp_show_notices','1'),
+('lp_show_about','1'),
+('lp_show_stats','1'),
+('lp_primary_color','#0d6efd'),
+('lp_cta_title','Start Your Journey With Us'),
+('lp_cta_text','Applications for the new academic session are now open. Secure your child''s future with us.');
+
+-- Default sample notices
+INSERT INTO `notices` (`title`,`body`,`category`,`is_active`) VALUES
+('Admission Open for 2025-26','Applications for all classes are now open. Apply online today.','admission',1),
+('Annual Sports Day','Annual Sports Day will be held on 15th March. All students are requested to participate.','event',1),
+('Mid-Term Examination Schedule','Mid-term examinations begin from 10th March. Time table is available in the school office.','exam',1);
 
 SET FOREIGN_KEY_CHECKS = 1;
