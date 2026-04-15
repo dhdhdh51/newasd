@@ -1,99 +1,57 @@
 # ============================================================
 # School ERP — Apache .htaccess
-# Configured for: asd.earn-bharat.site (subdomain root)
+# asd.earn-bharat.site (subdomain root, cPanel)
+# NOTE: No php_flag/php_value here — cPanel runs PHP as
+#       FastCGI/suPHP so those directives cause 500 errors.
+#       PHP settings live in .user.ini instead.
 # ============================================================
 
-# Combine all Options on ONE line (multiple lines override each other)
-Options -Indexes -MultiViews +FollowSymLinks
+Options -Indexes +FollowSymLinks
 
-# ============================================================
-# Rewrite Engine
-# ============================================================
 RewriteEngine On
 RewriteBase /
 
-# ─── Block direct access to sensitive paths ───────────────
-RewriteRule ^config(/|$)           - [F,L]
-RewriteRule ^includes(/|$)         - [F,L]
-RewriteRule ^\.git(/|$)            - [F,L]
-RewriteRule \.sql$                 - [F,L]
-RewriteRule \.log$                 - [F,L]
-RewriteRule \.env$                 - [F,L]
-RewriteRule ^DEPLOYMENT\.md$       - [F,L]
+# ── Block sensitive paths ─────────────────────────────────
+RewriteRule ^config(/|$)    - [F,L]
+RewriteRule ^includes(/|$)  - [F,L]
+RewriteRule ^\.git(/|$)     - [F,L]
+RewriteRule \.sql$          - [F,L]
+RewriteRule \.env$          - [F,L]
+RewriteRule ^DEPLOYMENT\.md$ - [F,L]
 
-# ─── Block PHP execution inside uploads ───────────────────
-RewriteRule ^uploads/.*\.(php|phtml|php3|php4|php5|php7|phps|cgi|pl|py|sh)$ - [F,NC,L]
+# ── Block PHP execution inside uploads ────────────────────
+RewriteRule ^uploads/.*\.(php|phtml|php3|php5|php7|cgi|pl|py|sh)$ - [F,NC,L]
 
-# ─── Serve real files and directories as-is ───────────────
+# ── Serve real files and directories directly ─────────────
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# ─── Everything else → index.php ──────────────────────────
+# ── Everything else → index.php ───────────────────────────
 RewriteRule ^ index.php [L]
 
-# ============================================================
-# Directory Index
-# ============================================================
+# ── Directory index ───────────────────────────────────────
 DirectoryIndex index.php index.html
 
-# ============================================================
-# Security Headers
-# ============================================================
+# ── Basic security headers (safe on all cPanel setups) ────
 <IfModule mod_headers.c>
-  Header always set X-Content-Type-Options  "nosniff"
-  Header always set X-Frame-Options         "SAMEORIGIN"
-  Header always set X-XSS-Protection        "1; mode=block"
-  Header always set Referrer-Policy         "strict-origin-when-cross-origin"
-  Header unset Server
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
   Header unset X-Powered-By
 </IfModule>
 
-# ============================================================
-# PHP Settings (cPanel shared hosting)
-# ============================================================
-<IfModule mod_php8.c>
-  php_flag  display_errors          Off
-  php_flag  log_errors              On
-  php_value upload_max_filesize     5M
-  php_value post_max_size           6M
-  php_value max_execution_time      60
-  php_value memory_limit            128M
-  php_value session.cookie_httponly 1
-  php_value session.use_strict_mode 1
-  php_value session.cookie_samesite Lax
-</IfModule>
-
-<IfModule mod_php7.c>
-  php_flag  display_errors          Off
-  php_flag  log_errors              On
-  php_value upload_max_filesize     5M
-  php_value post_max_size           6M
-  php_value max_execution_time      60
-  php_value memory_limit            128M
-  php_value session.cookie_httponly 1
-  php_value session.use_strict_mode 1
-</IfModule>
-
-# ============================================================
-# Gzip Compression
-# ============================================================
+# ── Gzip compression ─────────────────────────────────────
 <IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/html text/plain text/css
-  AddOutputFilterByType DEFLATE application/javascript application/json
-  AddOutputFilterByType DEFLATE image/svg+xml
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript
 </IfModule>
 
-# ============================================================
-# Browser Caching
-# ============================================================
+# ── Browser caching for static assets ────────────────────
 <IfModule mod_expires.c>
   ExpiresActive On
   ExpiresByType text/css               "access plus 7 days"
   ExpiresByType application/javascript "access plus 7 days"
   ExpiresByType image/png              "access plus 30 days"
   ExpiresByType image/jpeg             "access plus 30 days"
-  ExpiresByType image/gif              "access plus 30 days"
   ExpiresByType image/webp             "access plus 30 days"
   ExpiresByType image/x-icon           "access plus 90 days"
   ExpiresByType text/html              "access plus 0 seconds"
