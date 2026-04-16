@@ -29,6 +29,7 @@ $nav_items = match($role) {
         ['icon' => 'file-earmark-person', 'label' => 'Admissions',  'url' => '/admin/admissions/'],
         ['icon' => 'receipt',         'label' => 'Fees',            'url' => '/admin/fees/'],
         ['icon' => 'bell',            'label' => 'Notifications',   'url' => '/admin/notifications/'],
+        ['icon' => 'layout-text-window-reverse', 'label' => 'Landing Page', 'url' => '/admin/landing/'],
         ['icon' => 'gear',            'label' => 'Settings',        'url' => '/admin/settings/'],
     ],
     'student' => [
