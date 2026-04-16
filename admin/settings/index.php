@@ -18,6 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'smtp_host','smtp_port','smtp_user','smtp_pass','smtp_from','smtp_from_name','smtp_encryption',
         'payu_merchant_key','payu_merchant_salt','payu_mode','payu_surl','payu_furl',
         'meta_title','meta_description','meta_keywords','pass_percentage',
+        'contact_map_embed','social_facebook','social_twitter','social_instagram','social_youtube',
+        'about_mission','about_vision',
     ];
 
     $upsert = $pdo->prepare(
@@ -109,6 +111,17 @@ include INCLUDES_PATH . 'header.php';
           <div class="mb-3"><label class="form-label fw-semibold">Email</label><input type="email" name="contact_email" class="form-control" value="<?= s($settings,'contact_email') ?>"></div>
           <div class="mb-3"><label class="form-label fw-semibold">Phone</label><input type="text" name="contact_phone" class="form-control" value="<?= s($settings,'contact_phone') ?>"></div>
           <div class="mb-3"><label class="form-label fw-semibold">Address</label><textarea name="contact_address" class="form-control" rows="3"><?= s($settings,'contact_address') ?></textarea></div>
+          <div class="mb-3"><label class="form-label fw-semibold">Google Maps Embed</label><textarea name="contact_map_embed" class="form-control" rows="3" placeholder="Paste full &lt;iframe&gt; code from Google Maps → Share → Embed a map"><?= s($settings,'contact_map_embed') ?></textarea><div class="form-text">Go to Google Maps → Share → Embed a map → copy the full &lt;iframe&gt; code.</div></div>
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm mt-3">
+        <div class="card-header bg-white border-0 fw-semibold">Social Media Links</div>
+        <div class="card-body">
+          <div class="mb-2"><label class="form-label fw-semibold small">Facebook URL</label><input type="url" name="social_facebook" class="form-control form-control-sm" value="<?= s($settings,'social_facebook') ?>" placeholder="https://facebook.com/..."></div>
+          <div class="mb-2"><label class="form-label fw-semibold small">Twitter / X URL</label><input type="url" name="social_twitter" class="form-control form-control-sm" value="<?= s($settings,'social_twitter') ?>" placeholder="https://twitter.com/..."></div>
+          <div class="mb-2"><label class="form-label fw-semibold small">Instagram URL</label><input type="url" name="social_instagram" class="form-control form-control-sm" value="<?= s($settings,'social_instagram') ?>" placeholder="https://instagram.com/..."></div>
+          <div class="mb-0"><label class="form-label fw-semibold small">YouTube URL</label><input type="url" name="social_youtube" class="form-control form-control-sm" value="<?= s($settings,'social_youtube') ?>" placeholder="https://youtube.com/..."></div>
         </div>
       </div>
 

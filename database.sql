@@ -314,6 +314,21 @@ CREATE TABLE IF NOT EXISTS `notices` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
+-- Table: testimonials
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `testimonials` (
+  `id`          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `name`        VARCHAR(100)  NOT NULL,
+  `role`        VARCHAR(100)  DEFAULT 'Student',
+  `message`     TEXT          NOT NULL,
+  `photo`       VARCHAR(255)  DEFAULT NULL,
+  `rating`      TINYINT(1)    DEFAULT 5,
+  `is_active`   TINYINT(1)    DEFAULT 1,
+  `sort_order`  INT UNSIGNED  DEFAULT 0,
+  `created_at`  TIMESTAMP     DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
 -- Table: teacher_subjects (many-to-many)
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS `teacher_subjects` (
@@ -409,12 +424,29 @@ INSERT INTO `settings` (`setting_key`,`setting_value`) VALUES
 ('lp_show_stats','1'),
 ('lp_primary_color','#0d6efd'),
 ('lp_cta_title','Start Your Journey With Us'),
-('lp_cta_text','Applications for the new academic session are now open. Secure your child''s future with us.');
+('lp_cta_text','Applications for the new academic session are now open. Secure your child''s future with us.'),
+-- Extra public pages settings
+('lp_show_testimonials','1'),
+('lp_show_courses','1'),
+('about_mission','To provide every child with an exceptional education that fosters curiosity, creativity, critical thinking, and strong values — preparing them for a rapidly changing world.'),
+('about_vision','To be a leading institution that nurtures future-ready, responsible global citizens through academic excellence and character development.'),
+('contact_map_embed',''),
+('social_facebook',''),
+('social_twitter',''),
+('social_instagram',''),
+('social_youtube','');
 
 -- Default sample notices
 INSERT INTO `notices` (`title`,`body`,`category`,`is_active`) VALUES
 ('Admission Open for 2025-26','Applications for all classes are now open. Apply online today.','admission',1),
 ('Annual Sports Day','Annual Sports Day will be held on 15th March. All students are requested to participate.','event',1),
 ('Mid-Term Examination Schedule','Mid-term examinations begin from 10th March. Time table is available in the school office.','exam',1);
+
+-- Default testimonials
+INSERT INTO `testimonials` (`name`,`role`,`message`,`rating`,`is_active`,`sort_order`) VALUES
+('Priya Sharma','Parent of Class 10 Student','This school has transformed my child completely. The teachers are dedicated and the environment is very supportive. Highly recommended!',5,1,1),
+('Rahul Verma','Class 12 Graduate','I scored 95% in boards thanks to the excellent faculty here. The smart classrooms and lab facilities are world-class.',5,1,2),
+('Sunita Patel','Parent of Class 6 Student','Very happy with the holistic development approach. My daughter loves going to school every day. The staff is always approachable.',5,1,3),
+('Amit Singh','Class 11 Student','The teachers here genuinely care about each student. Extra classes, doubt sessions, and personal attention helped me improve a lot.',5,1,4);
 
 SET FOREIGN_KEY_CHECKS = 1;

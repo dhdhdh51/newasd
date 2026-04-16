@@ -22,7 +22,13 @@ if (($s['lp_show_gallery'] ?? '1') === '1') {
 // Latest notices
 $notices = [];
 if (($s['lp_show_notices'] ?? '1') === '1') {
-    $notices = $pdo->query("SELECT * FROM notices WHERE is_active=1 ORDER BY created_at DESC LIMIT 6")->fetchAll();
+    $notices = $pdo->query("SELECT * FROM notices WHERE is_active=1 ORDER BY created_at DESC LIMIT 4")->fetchAll();
+}
+
+// Testimonials
+$testimonials = [];
+if (($s['lp_show_testimonials'] ?? '1') === '1') {
+    $testimonials = $pdo->query("SELECT * FROM testimonials WHERE is_active=1 ORDER BY sort_order ASC, id ASC LIMIT 6")->fetchAll();
 }
 
 $site_name = lp($s, 'site_name', 'School ERP');
@@ -587,6 +593,112 @@ $notice_colors = ['general'=>'primary','exam'=>'warning','event'=>'success','hol
         </div>
         <?php endforeach; ?>
       </div>
+    </div>
+  </div>
+</section>
+<?php endif; ?>
+
+<?php if (($s['lp_show_courses'] ?? '1') === '1'): ?>
+<!-- ═══════════════════════════════════════════
+     COURSES / CLASSES
+════════════════════════════════════════════ -->
+<section style="padding:80px 0; background:#fff;">
+  <div class="container">
+    <div class="text-center mb-5">
+      <div class="section-badge">Academic Programmes</div>
+      <h2 class="section-title">Classes We Offer</h2>
+      <div class="section-divider mx-auto mb-3"></div>
+      <p class="text-muted">Comprehensive education from Class 1 through Class 12, covering all major boards.</p>
+    </div>
+    <div class="row g-3">
+      <?php
+      $classGroups = [
+        ['Primary (Class 1–5)',   range(1,5),   'text-primary','bg-primary','bi-book-half'],
+        ['Middle (Class 6–8)',    range(6,8),   'text-success','bg-success','bi-journal-text'],
+        ['Secondary (Class 9–10)',range(9,10),  'text-warning','bg-warning','bi-mortarboard'],
+        ['Senior (Class 11–12)', range(11,12), 'text-danger', 'bg-danger', 'bi-award'],
+      ];
+      foreach ($classGroups as [$groupName,$classes,$textCls,$bgCls,$icon]): ?>
+      <div class="col-12 col-md-6 col-lg-3">
+        <div class="h-100 rounded-4 border overflow-hidden" style="background:#fafbff;">
+          <div class="p-3 text-white <?= $bgCls ?> d-flex align-items-center gap-2">
+            <i class="bi <?= $icon ?> fs-4"></i>
+            <span class="fw-semibold"><?= $groupName ?></span>
+          </div>
+          <div class="p-3">
+            <div class="d-flex flex-wrap gap-2">
+              <?php foreach ($classes as $c): ?>
+              <span class="badge <?= $bgCls ?> bg-opacity-10 <?= $textCls ?> rounded-pill px-3 py-2 fw-semibold">
+                Class <?= $c ?>
+              </span>
+              <?php endforeach; ?>
+            </div>
+            <p class="text-muted small mt-3 mb-0">
+              <?php $descs=[
+                'Primary (Class 1–5)'    => 'Foundation skills — Maths, English, EVS, Hindi, Arts & Craft.',
+                'Middle (Class 6–8)'     => 'Core subjects — Science, Social Studies, Languages, Computer.',
+                'Secondary (Class 9–10)' => 'Board preparation — all streams with practical labs.',
+                'Senior (Class 11–12)'   => 'Science, Commerce & Arts streams with expert faculty.',
+              ]; echo $descs[$groupName] ?? ''; ?>
+            </p>
+          </div>
+        </div>
+      </div>
+      <?php endforeach; ?>
+    </div>
+    <div class="text-center mt-4">
+      <a href="<?= SITE_URL ?>/public/admission.php" class="btn btn-primary px-5">
+        <i class="bi bi-pencil-square me-2"></i>Apply for Admission
+      </a>
+    </div>
+  </div>
+</section>
+<?php endif; ?>
+
+<?php if (!empty($testimonials)): ?>
+<!-- ═══════════════════════════════════════════
+     TESTIMONIALS
+════════════════════════════════════════════ -->
+<section style="padding:80px 0; background:#f8f9ff;">
+  <div class="container">
+    <div class="text-center mb-5">
+      <div class="section-badge">What They Say</div>
+      <h2 class="section-title">Student &amp; Parent Testimonials</h2>
+      <div class="section-divider mx-auto"></div>
+    </div>
+    <div class="row g-4">
+      <?php foreach ($testimonials as $t): ?>
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="h-100 rounded-4 p-4 bg-white shadow-sm" style="border-top:4px solid var(--lp-primary);transition:transform .25s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+          <!-- Stars -->
+          <div class="mb-3">
+            <?php for ($i=1;$i<=5;$i++): ?>
+            <i class="bi bi-star-fill <?= $i<=(int)$t['rating']?'text-warning':'text-muted' ?>"></i>
+            <?php endfor; ?>
+          </div>
+          <!-- Quote -->
+          <p class="text-muted lh-lg mb-4" style="font-style:italic;">
+            &ldquo;<?= htmlspecialchars($t['message'],ENT_QUOTES) ?>&rdquo;
+          </p>
+          <!-- Person -->
+          <div class="d-flex align-items-center gap-3">
+            <?php if (!empty($t['photo'])): ?>
+            <img src="<?= UPLOADS_URL.'/'.htmlspecialchars($t['photo'],ENT_QUOTES) ?>"
+                 class="rounded-circle" width="48" height="48" style="object-fit:cover;">
+            <?php else: ?>
+            <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white"
+                 style="width:48px;height:48px;background:var(--lp-primary);font-size:1.1rem;flex-shrink:0;">
+              <?= strtoupper(mb_substr($t['name'],0,1)) ?>
+            </div>
+            <?php endif; ?>
+            <div>
+              <div class="fw-bold"><?= htmlspecialchars($t['name'],ENT_QUOTES) ?></div>
+              <div class="text-muted small"><?= htmlspecialchars($t['role'],ENT_QUOTES) ?></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <?php endforeach; ?>
     </div>
   </div>
 </section>
