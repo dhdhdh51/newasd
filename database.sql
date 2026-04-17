@@ -329,6 +329,21 @@ CREATE TABLE IF NOT EXISTS `testimonials` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
+-- Table: fee_categories
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `fee_categories` (
+  `id`                  INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `name`                VARCHAR(100)   NOT NULL,
+  `description`         TEXT           DEFAULT NULL,
+  `amount`              DECIMAL(10,2)  NOT NULL DEFAULT 0,
+  `class_id`            INT UNSIGNED   DEFAULT NULL COMMENT 'NULL = all classes',
+  `apply_on_admission`  TINYINT(1)     DEFAULT 0 COMMENT '1 = auto-apply when admission approved',
+  `is_active`           TINYINT(1)     DEFAULT 1,
+  `created_at`          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`class_id`) REFERENCES `classes`(`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
 -- Table: teacher_subjects (many-to-many)
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS `teacher_subjects` (
@@ -434,7 +449,15 @@ INSERT INTO `settings` (`setting_key`,`setting_value`) VALUES
 ('social_facebook',''),
 ('social_twitter',''),
 ('social_instagram',''),
-('social_youtube','');
+('social_youtube',''),
+('fee_apply_on_admission','1');
+
+-- Default fee categories
+INSERT INTO `fee_categories` (`name`,`description`,`amount`,`class_id`,`apply_on_admission`,`is_active`) VALUES
+('Admission Fee','One-time fee charged at the time of admission',5000.00,NULL,1,1),
+('Tuition Fee','Monthly tuition fee',2000.00,NULL,0,1),
+('Annual Charges','Annual maintenance and development fee',3000.00,NULL,1,1),
+('Library Fee','Annual library subscription fee',500.00,NULL,0,1);
 
 -- Default sample notices
 INSERT INTO `notices` (`title`,`body`,`category`,`is_active`) VALUES
