@@ -15,23 +15,24 @@ $role       = get_user_role();
 // Build sidebar nav based on role
 $nav_items = match($role) {
     'admin' => [
-        ['icon' => 'speedometer2',    'label' => 'Dashboard',       'url' => '/admin/'],
-        ['icon' => 'people-fill',     'label' => 'Students',        'url' => '/admin/students/'],
-        ['icon' => 'person-badge',    'label' => 'Teachers',        'url' => '/admin/teachers/'],
-        ['icon' => 'people',          'label' => 'Parents',         'url' => '/admin/parents/'],
-        ['icon' => 'mortarboard',     'label' => 'Classes',         'url' => '/admin/classes/'],
-        ['icon' => 'grid-1x2',        'label' => 'Sections',        'url' => '/admin/sections/'],
-        ['icon' => 'book',            'label' => 'Subjects',        'url' => '/admin/subjects/'],
-        ['icon' => 'clipboard2-data', 'label' => 'Exams',           'url' => '/admin/exams/'],
-        ['icon' => 'pencil-square',   'label' => 'Marks',           'url' => '/admin/marks/'],
-        ['icon' => 'award',           'label' => 'Results',         'url' => '/admin/results/'],
-        ['icon' => 'calendar-check',  'label' => 'Attendance',      'url' => '/admin/attendance/'],
-        ['icon' => 'file-earmark-person', 'label' => 'Admissions',  'url' => '/admin/admissions/'],
-        ['icon' => 'receipt',         'label' => 'Fees',            'url' => '/admin/fees/'],
-        ['icon' => 'bell',            'label' => 'Notifications',   'url' => '/admin/notifications/'],
-        ['icon' => 'layout-text-window-reverse', 'label' => 'Landing Page',  'url' => '/admin/landing/'],
-        ['icon' => 'chat-quote',                 'label' => 'Testimonials',   'url' => '/admin/testimonials/'],
-        ['icon' => 'gear',            'label' => 'Settings',        'url' => '/admin/settings/'],
+        ['icon' => 'speedometer2',        'label' => 'Dashboard',        'url' => '/admin/'],
+        ['icon' => 'people-fill',         'label' => 'Students',         'url' => '/admin/students/'],
+        ['icon' => 'person-badge',        'label' => 'Teachers',         'url' => '/admin/teachers/'],
+        ['icon' => 'people',              'label' => 'Parents',          'url' => '/admin/parents/'],
+        ['icon' => 'mortarboard',         'label' => 'Classes',          'url' => '/admin/classes/'],
+        ['icon' => 'grid-1x2',            'label' => 'Sections',         'url' => '/admin/sections/'],
+        ['icon' => 'book',                'label' => 'Subjects',         'url' => '/admin/subjects/'],
+        ['icon' => 'clipboard2-data',     'label' => 'Exams',            'url' => '/admin/exams/'],
+        ['icon' => 'pencil-square',       'label' => 'Marks',            'url' => '/admin/marks/'],
+        ['icon' => 'award',               'label' => 'Results',          'url' => '/admin/results/'],
+        ['icon' => 'calendar-check',      'label' => 'Attendance',       'url' => '/admin/attendance/'],
+        ['icon' => 'file-earmark-person', 'label' => 'Admissions',       'url' => '/admin/admissions/'],
+        ['icon' => 'receipt',             'label' => 'Fees',             'url' => '/admin/fees/'],
+        ['icon' => 'tags-fill',           'label' => 'Fee Categories',   'url' => '/admin/fees/categories.php'],
+        ['icon' => 'bell',                'label' => 'Notifications',    'url' => '/admin/notifications/'],
+        ['icon' => 'layout-text-window-reverse', 'label' => 'Landing Page', 'url' => '/admin/landing/'],
+        ['icon' => 'chat-quote',          'label' => 'Testimonials',     'url' => '/admin/testimonials/'],
+        ['icon' => 'gear',                'label' => 'Settings',         'url' => '/admin/settings/'],
     ],
     'student' => [
         ['icon' => 'speedometer2',    'label' => 'Dashboard',       'url' => '/student/'],
@@ -68,10 +69,16 @@ $current_path = $_SERVER['REQUEST_URI'] ?? '';
   <meta property="og:description" content="<?= sanitize(get_setting('meta_description','')) ?>">
   <title><?= sanitize($page_title) ?> - <?= sanitize($site_name) ?></title>
 
+  <!-- Google Fonts – Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <!-- Custom CSS -->
   <link href="<?= ASSETS_URL ?>/css/style.css" rel="stylesheet">
   <?php if (!empty($extra_head)) echo $extra_head; ?>

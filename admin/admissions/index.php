@@ -15,20 +15,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
     $remarks = sanitize($_POST['remarks'] ?? '');
 
     if ($aid && in_array($status, ['approved','rejected','pending'])) {
+        // Fetch current admission record first
+        $stmt = $pdo->prepare("SELECT * FROM admissions WHERE id=?");
+        $stmt->execute([$aid]);
+        $adm = $stmt->fetch();
+
+        $prev_status = $adm['status'] ?? '';
+
         $pdo->prepare(
             "UPDATE admissions SET status=?,remarks=?,reviewed_by=?,reviewed_at=NOW() WHERE id=?"
         )->execute([$status, $remarks, $_SESSION['user_id'], $aid]);
 
-        // Get admission email
-        $stmt = $pdo->prepare("SELECT * FROM admissions WHERE id=?");
-        $stmt->execute([$aid]);
-        $adm = $stmt->fetch();
+        // ── Auto-apply fees when admission is APPROVED ──────────────────────
+        if ($status === 'approved' && $prev_status !== 'approved') {
+            $global_toggle = get_setting('fee_apply_on_admission', '1');
+
+            if ($global_toggle === '1' && $adm) {
+                // Find a linked student record for this admission (if already created)
+                // Match by name + class (best effort)
+                $student_stmt = $pdo->prepare(
+                    "SELECT id FROM students WHERE name=? AND class_id=? LIMIT 1"
+                );
+                $student_stmt->execute([$adm['name'], $adm['class_applying']]);
+                $linked_student = $student_stmt->fetch();
+
+                if ($linked_student) {
+                    $student_id = $linked_student['id'];
+                    $class_id   = (int)$adm['class_applying'];
+
+                    // Get active fee categories with apply_on_admission=1 for this class
+                    $fee_cats_stmt = $pdo->prepare(
+                        "SELECT * FROM fee_categories
+                         WHERE is_active=1 AND apply_on_admission=1
+                           AND (class_id IS NULL OR class_id=?)
+                         ORDER BY id ASC"
+                    );
+                    $fee_cats_stmt->execute([$class_id]);
+                    $fee_cats = $fee_cats_stmt->fetchAll();
+
+                    foreach ($fee_cats as $fc) {
+                        // Avoid duplicate fee invoice for same student+category
+                        $dup = $pdo->prepare(
+                            "SELECT id FROM fees WHERE student_id=? AND fee_type=? LIMIT 1"
+                        );
+                        $dup->execute([$student_id, $fc['name']]);
+                        if ($dup->fetch()) continue;
+
+                        $invoice_no = 'INV-' . strtoupper(substr(md5(uniqid()), 0, 8));
+                        $due_date   = date('Y-m-d', strtotime('+30 days'));
+
+                        $pdo->prepare(
+                            "INSERT INTO fees (student_id,fee_type,amount,due_date,status,invoice_no,created_by)
+                             VALUES (?,?,?,?,'pending',?,?)"
+                        )->execute([
+                            $student_id,
+                            $fc['name'],
+                            $fc['amount'],
+                            $due_date,
+                            $invoice_no,
+                            $_SESSION['user_id'],
+                        ]);
+                    }
+
+                    if (!empty($fee_cats)) {
+                        $fee_msg = ' ' . count($fee_cats) . ' fee invoice(s) auto-generated.';
+                    }
+                }
+            }
+        }
+        // ───────────────────────────────────────────────────────────────────
 
         if ($adm && $adm['email']) {
             SchoolMailer::sendAdmissionStatus($adm['email'], $adm['name'], $status, $remarks);
         }
 
-        set_flash('success', "Admission status updated to '{$status}'.");
+        $flash_msg = "Admission status updated to '{$status}'.";
+        if (!empty($fee_msg)) $flash_msg .= $fee_msg;
+        set_flash('success', $flash_msg);
     }
     redirect(SITE_URL . '/admin/admissions/');
 }
